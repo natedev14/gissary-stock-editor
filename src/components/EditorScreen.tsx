@@ -17,11 +17,7 @@ export function EditorScreen() {
   const indexByCode = useStockStore((s) => s.indexByCode);
   const persistActive = useStockStore((s) => s.persistActive);
 
-  // Búsqueda rápida dentro del padre — PRD §7.3
   const [searchVar, setSearchVar] = useState('');
-
-  // Estado local de contadores en modo Auditoría.
-  // Reset a 0 cada vez que cambia el padre o el modo.
   const [auditCounts, setAuditCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
@@ -30,7 +26,6 @@ export function EditorScreen() {
     }
   }, [mode, activeParentCode]);
 
-  // Persistir al salir del padre
   useEffect(() => {
     return () => {
       persistActive();
@@ -59,7 +54,6 @@ export function EditorScreen() {
   }, [group, searchVar, rows, indexByCode]);
 
   if (!group || !parentRow) {
-    // No debería pasar si activeParentCode está seteado, pero por seguridad:
     return (
       <div class="p-6 text-center text-gray-500">
         Modelo no encontrado.{' '}
@@ -72,9 +66,8 @@ export function EditorScreen() {
 
   return (
     <div class="flex flex-col min-h-screen bg-gray-50">
-      {/* Header sticky */}
       <header class="sticky top-0 z-10 bg-white border-b border-gray-200">
-        <div class="flex items-center gap-3 px-4 py-3">
+        <div class="flex items-center gap-3 px-3 py-3">
           <button
             type="button"
             onClick={() => {
@@ -103,7 +96,7 @@ export function EditorScreen() {
             <p class="text-xs text-gray-500 truncate">{parentRow['Descrição']}</p>
           </div>
         </div>
-        <div class="px-4 pb-3 flex flex-col gap-3">
+        <div class="px-3 pb-3 flex flex-col gap-3">
           <ModeToggle />
           <input
             type="search"
@@ -116,8 +109,7 @@ export function EditorScreen() {
         </div>
       </header>
 
-      {/* Lista de variaciones */}
-      <main class="flex-1 px-4 py-4 pb-32">
+      <main class="flex-1 px-3 py-4 pb-32">
         {filteredChildren.length === 0 && (
           <div class="p-8 text-center text-gray-400 text-sm">Sin variaciones que coincidan</div>
         )}
@@ -137,8 +129,7 @@ export function EditorScreen() {
         </ul>
       </main>
 
-      {/* Footer fijo con Export */}
-      <footer class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 px-4 py-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
+      <footer class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 px-3 py-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
         <ExportButton />
       </footer>
     </div>
