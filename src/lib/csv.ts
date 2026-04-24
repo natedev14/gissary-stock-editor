@@ -20,6 +20,7 @@ export function parseCsv(file: File): Promise<ParseResult> {
       // vuelve 10, un "16,99" no se toca. La columna Estoque la tratamos
       // como integer solo en la UI, pero se exporta string.
       dynamicTyping: false,
+      delimiter: ';',
       transformHeader: (h) => h.trim(),
       complete: (results) => {
         if (!results.meta.fields || results.meta.fields.length === 0) {
