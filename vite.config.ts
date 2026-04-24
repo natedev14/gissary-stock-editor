@@ -5,7 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 // Para GitHub Pages con repo "gissary-stock-editor" cambia base a '/gissary-stock-editor/'.
 // Si desplegas en dominio raíz, dejalo como '/'.
 export default defineConfig({
-  base: './',
+  base: '/gissary-stock-editor/',
   plugins: [
     preact(),
     VitePWA({
