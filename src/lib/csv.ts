@@ -52,7 +52,7 @@ export function exportCsv(rows: CsvRow[], meta: CsvMeta): Blob {
     },
     {
       quotes: true,           // quote every field — decisión deliberada para máxima fidelidad
-      delimiter: ',',
+      delimiter: ';',
       newline: '\r\n',
       header: true,
     }
