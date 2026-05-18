@@ -43,14 +43,14 @@ export function validateRows(rows: CsvRow[]): { ok: true } | { ok: false; messag
   if (emptyCodeRows.length > 0) {
     return {
       ok: false,
-      message: `Hay filas sin Código. Revisa las filas: ${emptyCodeRows.slice(0, 8).join(', ')}.`,
+      message: `Há linhas sem Código. Verifique as linhas: ${emptyCodeRows.slice(0, 8).join(', ')}.`,
     };
   }
 
   if (duplicateCodes.size > 0) {
     return {
       ok: false,
-      message: `Hay códigos duplicados: ${Array.from(duplicateCodes).slice(0, 8).join(', ')}. Corrige el archivo antes de contar.`,
+      message: `Há códigos duplicados: ${Array.from(duplicateCodes).slice(0, 8).join(', ')}. Corrija o arquivo antes de contar.`,
     };
   }
 
@@ -59,14 +59,14 @@ export function validateRows(rows: CsvRow[]): { ok: true } | { ok: false; messag
   if (parents.length === 0) {
     return {
       ok: false,
-      message: 'No se encontró un producto padre. El archivo debe tener una fila con Código Pai vacío o 0.',
+      message: 'Nenhum produto pai encontrado. O arquivo deve ter uma linha com Código Pai vazio ou 0.',
     };
   }
 
   if (parents.length > 1) {
     return {
       ok: false,
-      message: `Este editor está optimizado para un producto por archivo. Este archivo contiene ${parents.length} productos padre. Carga solo un producto a la vez.`,
+      message: `Este editor é otimizado para um produto por arquivo. Este arquivo contém ${parents.length} produtos pai. Carregue apenas um produto por vez.`,
     };
   }
 
@@ -76,7 +76,7 @@ export function validateRows(rows: CsvRow[]): { ok: true } | { ok: false; messag
   if (children.length === 0) {
     return {
       ok: false,
-      message: 'Este producto no tiene variaciones para contar.',
+      message: 'Este produto não tem variações para contar.',
     };
   }
 
@@ -85,7 +85,7 @@ export function validateRows(rows: CsvRow[]): { ok: true } | { ok: false; messag
   if (orphanChildren.length > 0) {
     return {
       ok: false,
-      message: `Hay variaciones que no pertenecen al producto padre ${parentCode}: ${orphanChildren
+      message: `Há variações que não pertencem ao produto pai ${parentCode}: ${orphanChildren
         .slice(0, 8)
         .map((row) => normalizeCode(row['Código']))
         .join(', ')}.`,

@@ -265,6 +265,7 @@ function ColorLabel({
     <div class="flex items-center gap-2.5">
       <button
         type="button"
+        tabIndex={-1}
         disabled={!image}
         onClick={(e) => {
           if (!image) return;
@@ -301,9 +302,10 @@ function StockInput({ value, isDirty, onInput }: { value: number; isDirty: boole
       inputMode="numeric"
       min="0"
       step="1"
-      enterKeyHint="done"
+      enterKeyHint="next"
       value={String(value)}
       onInput={(e) => onInput((e.target as HTMLInputElement).value)}
+      onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
       class={`h-14 w-full rounded-xl border-2 bg-white text-center text-xl font-bold text-slate-900 focus:outline-none focus:ring-4 md:min-h-fat md:text-2xl ${
         isDirty
           ? 'border-emerald-300 bg-emerald-50 focus:border-emerald-400 focus:ring-emerald-100'

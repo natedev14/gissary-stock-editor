@@ -16,6 +16,8 @@ export function EditorScreen() {
   const persistActive = useStockStore((s) => s.persistActive);
 
   const [searchVar, setSearchVar] = useState('');
+  const [confirmZero, setConfirmZero] = useState(false);
+  const resetParentStock = useStockStore((s) => s.resetParentStock);
 
   useEffect(() => {
     return () => {
@@ -134,8 +136,37 @@ export function EditorScreen() {
 
       <footer class="sticky bottom-0 z-20 border-t border-slate-200 bg-white/95 px-3 py-3 pb-[max(env(safe-area-inset-bottom),0.75rem)] backdrop-blur">
         <div class="mx-auto flex w-full max-w-7xl justify-center md:justify-end">
-          <div class="w-full md:max-w-md">
+          <div class="flex w-full flex-col gap-2 md:max-w-md">
             <ExportButton />
+            {confirmZero ? (
+              <div class="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetParentStock(group.parentCode);
+                    setConfirmZero(false);
+                  }}
+                  class="flex-1 rounded-2xl border-2 border-red-300 bg-red-50 py-2.5 text-sm font-bold text-red-700 transition-transform active:scale-[0.98]"
+                >
+                  Confirmar zeragem
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmZero(false)}
+                  class="flex-1 rounded-2xl border-2 border-slate-200 bg-white py-2.5 text-sm font-bold text-slate-600 transition-transform active:scale-[0.98]"
+                >
+                  Cancelar
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmZero(true)}
+                class="w-full rounded-2xl border border-slate-200 bg-white py-2 text-sm font-semibold text-slate-500 transition-transform active:scale-[0.98]"
+              >
+                Zerar tudo
+              </button>
+            )}
           </div>
         </div>
       </footer>

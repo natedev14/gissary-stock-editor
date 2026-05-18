@@ -19,6 +19,7 @@ interface State {
   setActiveParent: (code: string | null) => void;
   setSearch: (q: string) => void;
   updateChildStock: (parentCode: string, childCode: string, newValue: string) => void;
+  resetParentStock: (parentCode: string) => void;
   persistActive: () => void;
   rehydrateActive: () => void;
 }
@@ -97,6 +98,25 @@ export const useStockStore = create<State>((set, get) => ({
     const set_ = new Set(dirty[parentCode] ?? []);
     set_.add(childCode);
     dirty[parentCode] = set_;
+
+    set({ rows: newRows, dirtyByParent: dirty });
+    schedulePersist(parentCode);
+  },
+
+  resetParentStock: (parentCode) => {
+    const { rows, indexByCode, groups, dirtyByParent } = get();
+    const group = groups.find((g) => g.parentCode === parentCode);
+    if (!group) return;
+
+    const newRows = rows.slice();
+    for (const childCode of group.childCodes) {
+      const idx = indexByCode.get(childCode);
+      if (idx === undefined) continue;
+      newRows[idx] = { ...newRows[idx], Estoque: '0' };
+    }
+
+    const dirty = { ...dirtyByParent };
+    dirty[parentCode] = new Set(group.childCodes);
 
     set({ rows: newRows, dirtyByParent: dirty });
     schedulePersist(parentCode);

@@ -1,43 +1,41 @@
 # FlowStock
 
-App web estática para **conteo visual de estoque** de productos de Gissary Modas a partir de CSVs exportados desde Bling ERP.
+App web estática para **contagem visual de estoque** de produtos a partir de CSVs exportados do Bling ERP.
 
-La app permite cargar un CSV de productos, ver los modelos de forma visual, contar stock por **color y talla**, editar cantidades desde una matriz intuitiva y exportar un CSV listo para reimportar en Bling.
+A app permite carregar um CSV de um produto, ver as variações de forma visual, contar estoque por **cor e tamanho**, editar quantidades em uma matriz intuitiva e exportar um CSV pronto para reimportar no Bling.
 
-No usa backend, base de datos ni servidor propio. Todo corre en el navegador.
+Não usa backend, banco de dados nem servidor próprio. Tudo roda no navegador.
 
 ## Objetivo
 
-Reducir la fricción de contar inventario físico de ropa.
+Reduzir a fricção de contar inventário físico de roupas.
 
-En vez de editar un CSV manualmente, la app transforma el archivo de Bling en una interfaz visual:
+Em vez de editar um CSV manualmente, a app transforma o arquivo do Bling em uma interface visual:
 
 ```txt
-CSV de Bling
+CSV do Bling (1 produto)
   ↓
-Productos con imagen
+Matriz Cor × Tamanho
   ↓
-Matriz Color × Talla
+Contagem física editável
   ↓
-Conteo físico editable
-  ↓
-CSV corregido para Bling
+CSV corrigido para o Bling
 ```
 
-## Funcionalidades principales
+## Funcionalidades principais
 
-- Carga de CSV de productos exportado desde Bling.
-- Validación de columnas mínimas necesarias.
-- Agrupación automática de producto padre y variaciones.
-- Selector visual de productos con imagen, descripción y cantidad de variaciones.
-- Editor en matriz **Color × Talla**.
-- Inputs grandes para conteo físico.
-- Imagen por color con opción de ampliar en pantalla completa.
-- Búsqueda por color, talla, SKU o descripción.
-- Marcado visual de cantidades modificadas.
-- Autosave local por producto padre.
-- Exportación de CSV compatible con Bling.
-- Procesamiento 100% local en el navegador.
+- Carregamento de CSV de produto exportado do Bling.
+- Validação de colunas mínimas necessárias.
+- Validação de códigos vazios ou duplicados.
+- Editor em matriz **Cor × Tamanho**.
+- Inputs grandes para contagem física.
+- Imagem do produto no cabeçalho com fallback silencioso.
+- Busca por cor.
+- Marcação visual de quantidades modificadas.
+- Botão "Zerar tudo" com confirmação para resetar todo o estoque a 0.
+- Autosave local por produto.
+- Exportação de CSV compatível com Bling.
+- Processamento 100% local no navegador.
 
 ## Stack
 
@@ -45,7 +43,7 @@ CSV corregido para Bling
 - **Framework**: Preact + TypeScript
 - **Estado**: Zustand
 - **CSV**: PapaParse
-- **Validación**: Zod
+- **Validação**: Zod
 - **Estilos**: Tailwind CSS
 - **PWA**: vite-plugin-pwa
 - **Deploy**: GitHub Pages + GitHub Actions
@@ -54,14 +52,14 @@ CSV corregido para Bling
 
 ```bash
 npm install
-npm run dev      # desarrollo local en http://localhost:5173
-npm run build    # genera dist/
-npm run preview  # sirve dist/ localmente
+npm run dev      # desenvolvimento local em http://localhost:5173
+npm run build    # gera dist/
+npm run preview  # serve dist/ localmente
 ```
 
 ## Deploy
 
-El deploy se ejecuta automáticamente con GitHub Actions al hacer push a `main`.
+O deploy é executado automaticamente pelo GitHub Actions ao fazer push em `main`.
 
 Workflow:
 
@@ -69,7 +67,7 @@ Workflow:
 .github/workflows/deploy.yml
 ```
 
-El workflow hace:
+O workflow faz:
 
 ```txt
 checkout
@@ -77,36 +75,28 @@ setup-node
 npm install
 npm run build
 upload-pages-artifact
- deploy-pages
-```
-
-La app publicada usa la base configurada en Vite:
-
-```ts
-base: '/gissary-stock-editor/'
+deploy-pages
 ```
 
 URL pública:
 
 ```txt
-https://natedev14.github.io/gissary-stock-editor/
+https://flowstock.nathanielvergara.com
 ```
 
-## Flujo de uso
+## Fluxo de uso
 
-1. Abrir la app.
-2. Seleccionar el CSV exportado desde Bling.
-3. Ver la lista de productos/modelos cargados.
-4. Abrir un producto.
-5. Contar stock en la matriz **Color × Talla**.
-6. Tocar una imagen para verla ampliada si hace falta confirmar el color/prenda.
-7. Editar cantidades directamente en los inputs.
-8. Exportar el CSV corregido.
-9. Reimportar el CSV en Bling.
+1. Abrir a app.
+2. Selecionar o CSV exportado do Bling (um produto por arquivo).
+3. Contar estoque na matriz **Cor × Tamanho**.
+4. Editar quantidades diretamente nos inputs.
+5. Usar "Zerar tudo" se precisar resetar antes de contar.
+6. Exportar o CSV corrigido.
+7. Reimportar o CSV no Bling.
 
-## Formato esperado del CSV
+## Formato esperado do CSV
 
-La app espera un CSV de productos de Bling con delimitador `;` y columnas mínimas:
+A app espera um CSV de produto do Bling com delimitador `;` e colunas mínimas:
 
 ```txt
 Código
@@ -116,13 +106,15 @@ Estoque
 URL Imagens Externas
 ```
 
-La app no hardcodea todas las columnas del CSV. Al cargar el archivo, captura dinámicamente `meta.fields` desde PapaParse y usa ese orden como fuente de verdad para exportar.
+A app não hardcodea todas as colunas do CSV. Ao carregar o arquivo, captura dinamicamente `meta.fields` do PapaParse e usa essa ordem como fonte de verdade para exportar.
 
-## Matriz Color × Talla
+**Restrição:** o arquivo deve conter exatamente um produto pai. Arquivos com múltiplos produtos pai são rejeitados.
 
-Las variaciones se organizan usando el campo `Descrição`.
+## Matriz Cor × Tamanho
 
-Formato esperado en variaciones:
+As variações são organizadas usando o campo `Descrição`.
+
+Formato esperado nas variações:
 
 ```txt
 COR:Azul Escuro;TAMANHO:G
@@ -130,167 +122,146 @@ COR:Branco;TAMANHO:GG
 COR:Preto;TAMANHO:M
 ```
 
-La app extrae:
+A app extrai:
 
 ```txt
-COR      → color de la fila
-TAMANHO  → columna de talla
+COR      → cor da linha
+TAMANHO  → coluna de tamanho
 ```
 
-Ejemplo visual:
+Exemplo visual:
 
 ```txt
-Color / Talla       M      G      GG
+Cor / Tamanho       M      G      GG
 Amarelo Manteiga   [0]    [0]    [0]
 Azul Escuro        [9]    [8]    [0]
 Branco             [5]   [33]   [31]
 Preto              [0]   [30]   [60]
 ```
 
-Cada celda actualiza el campo `Estoque` de la variación correspondiente.
+Cada célula atualiza o campo `Estoque` da variação correspondente.
 
-## Imágenes
+## Exportação CSV
 
-La app usa `URL Imagens Externas` para mostrar imágenes de productos y variaciones.
+A exportação é pensada para voltar ao Bling com o mínimo de mudança possível.
 
-En el editor:
+Regras atuais:
 
-- Cada color muestra una imagen pequeña.
-- Al tocar/clicar la imagen, se abre un visor en pantalla completa.
-- Las imágenes se muestran con `object-contain` para evitar recortar la prenda.
+- Preserva a ordem original de colunas usando `meta.fields`.
+- Preserva a ordem original de linhas.
+- Exporta com delimitador `;`.
+- Usa `quotes: true` para proteger células com vírgulas, HTML ou caracteres especiais.
+- Usa `\r\n` como quebra de linha.
+- Adiciona BOM UTF-8 no início.
+- Só modifica a coluna `Estoque`.
+- `Estoque` é exportado em formato compatível com Bling: `10,00`, `0,00`, `35,00`.
 
-## Exportación CSV
-
-La exportación está pensada para volver a Bling con el mínimo cambio posible.
-
-Reglas actuales:
-
-- Se preserva el orden original de columnas usando `meta.fields`.
-- Se preserva el orden original de filas.
-- Se exporta con delimitador `;`.
-- Se usa `quotes: true` para proteger celdas con comas, HTML o caracteres especiales.
-- Se usa `\r\n` como salto de línea.
-- Se agrega BOM UTF-8 al inicio.
-- Solo se modifica la columna `Estoque`.
-- `Estoque` se exporta en formato compatible con Bling: `10,00`, `0,00`, `35,00`.
-
-Ejemplo:
+Exemplo:
 
 ```txt
 UI:       8
 Export:   8,00
 ```
 
-## Persistencia local
+## Persistência local
 
-La app guarda cambios en `localStorage` por producto padre.
+A app salva alterações no `localStorage` por produto.
 
 Características:
 
-- No guarda el CSV completo.
-- Guarda overrides de `Estoque` por variación.
-- Guarda qué variaciones fueron modificadas.
-- Al cargar un nuevo CSV, se limpian las sesiones anteriores para evitar mezclar datos viejos.
-- No se envía información a ningún servidor.
+- Não salva o CSV completo.
+- Salva overrides de `Estoque` por variação.
+- Salva quais variações foram modificadas.
+- Ao carregar um novo CSV, limpa as sessões anteriores para evitar misturar dados antigos.
+- Nenhuma informação é enviada a qualquer servidor.
 
-## Privacidad
+## Privacidade
 
-Todo ocurre localmente en el navegador:
+Tudo ocorre localmente no navegador:
 
 ```txt
-El CSV no se sube a un backend.
-No hay base de datos.
-No hay APIs externas.
-No hay servidor propio.
+O CSV não é enviado a um backend.
+Não há banco de dados.
+Não há APIs externas.
+Não há servidor próprio.
 ```
 
-Esto reduce costo, complejidad y riesgo operativo.
-
-## Estructura del proyecto
+## Estrutura do projeto
 
 ```txt
 src/
 ├── main.tsx
-├── app.tsx                     # Router entre Upload/Selector/Editor
+├── app.tsx                     # Alterna entre Upload e Editor
 ├── index.css                   # Tailwind + ajustes mobile
 ├── types.ts                    # CsvRow, CsvMeta, ParentGroup, StoredSession
-├── schema.ts                   # Validación de columnas obligatorias
+├── schema.ts                   # Validação de colunas, códigos e estrutura
 ├── lib/
 │   ├── csv.ts                  # parseCsv + exportCsv
 │   ├── grouping.ts             # buildGroups + firstImageUrl
-│   ├── parseDescricao.ts       # COR/TAMANHO → objeto estructurado
+│   ├── parseDescricao.ts       # COR/TAMANHO → objeto estruturado
 │   └── storage.ts              # localStorage por parentCode
 ├── store/
-│   └── useStockStore.ts        # Estado global + acciones de stock
+│   └── useStockStore.ts        # Estado global + ações de estoque
 └── components/
-    ├── UploadScreen.tsx        # Carga inicial del CSV
-    ├── ParentSelector.tsx      # Selector visual de productos
-    ├── EditorScreen.tsx        # Pantalla de conteo
-    ├── StockMatrix.tsx         # Matriz Color × Talla
-    ├── VariationCard.tsx       # Tarjeta de variación legacy/respaldo
-    └── ExportButton.tsx        # Exportación del CSV
+    ├── UploadScreen.tsx        # Carregamento inicial do CSV
+    ├── EditorScreen.tsx        # Tela de contagem (cabeçalho + busca + matriz)
+    ├── StockMatrix.tsx         # Matriz Cor × Tamanho
+    └── ExportButton.tsx        # Exportação do CSV
 ```
 
-## Decisiones de producto
+## Validação
 
-### Sin backend
+O arquivo é rejeitado se:
 
-La app no necesita servidor para resolver el problema actual. El flujo completo puede ejecutarse en el navegador: parsear CSV, editar, persistir localmente y exportar.
+- Faltam colunas obrigatórias → `Arquivo de ERP não compatível. Faltam colunas: ...`
+- Há linhas sem `Código` → informa quais linhas
+- Há códigos duplicados → lista os códigos repetidos
+- Não há nenhum produto pai
+- Há mais de um produto pai → `Este editor é otimizado para um produto por arquivo`
+- O produto pai não tem variações
 
-### Sin modos de edición
+## Decisões de produto
 
-Se eliminó la división entre “Ajuste Rápido” y “Auditoría”. El flujo actual es único:
+### Um produto por arquivo
+
+O editor é otimizado para contar estoque de um produto de cada vez. Arquivos com múltiplos produtos pai são rejeitados na validação.
+
+### Sem backend
+
+A app não precisa de servidor para resolver o problema atual. O fluxo completo roda no navegador: parsear CSV, editar, persistir localmente e exportar.
+
+### Sem modos de edição
+
+O fluxo atual é único:
 
 ```txt
-Ver stock actual → escribir conteo físico → exportar
+Ver estoque atual → escrever contagem física → exportar
 ```
 
-Menos decisiones para el usuario, menos riesgo operativo.
+Menos decisões para o usuário, menos risco operacional.
 
-### Matriz en vez de lista
+### Matriz em vez de lista
 
-Para ropa, el stock se entiende mejor como combinación de color y talla. Por eso el editor principal usa una matriz **Color × Talla** en lugar de una lista larga de SKUs.
+Para roupas, o estoque se entende melhor como combinação de cor e tamanho. Por isso o editor principal usa uma matriz **Cor × Tamanho** em vez de uma lista longa de SKUs.
 
-### Imágenes ampliables
+## Limitações conhecidas
 
-El conteo es visual. La imagen ayuda a reconocer color/modelo y reduce errores al contar.
+- A matriz depende de que as variações usem descrições com `COR:` e `TAMANHO:`.
+- Se um CSV vier com outro padrão de descrição, essas variações podem ser agrupadas como `Sem cor` ou `ÚNICO`.
+- A app não se conecta diretamente ao Bling; trabalha com CSV manual.
+- Não há controle multiusuário pois tudo é local.
 
-## Validación
+## Recomendação de teste antes de usar em produção
 
-El archivo se rechaza si faltan columnas críticas:
+Para cada mudança importante em `lib/csv.ts` ou no store:
 
-```txt
-Código
-Código Pai
-Descrição
-Estoque
-URL Imagens Externas
-```
+1. Carregar um CSV real do Bling.
+2. Exportar sem modificar nada.
+3. Comparar colunas, linhas e valores.
+4. Editar 2 ou 3 estoques.
+5. Exportar novamente.
+6. Confirmar que só mudou `Estoque`.
 
-Mensaje esperado:
+## Estado atual
 
-```txt
-Archivo de ERP no compatible. Faltan columnas: ...
-```
-
-## Limitaciones conocidas
-
-- La matriz depende de que las variaciones usen descripciones con `COR:` y `TAMANHO:`.
-- Si un CSV viene con otro patrón de descripción, esas variaciones pueden agruparse como `Sin color` o `ÚNICO`.
-- La app no se conecta directamente a Bling; trabaja con CSV manual.
-- No hay control multiusuario porque todo es local.
-
-## Recomendación de prueba antes de usar en producción
-
-Para cada cambio importante en `lib/csv.ts` o en el store:
-
-1. Cargar un CSV real de Bling.
-2. Exportar sin modificar nada.
-3. Comparar columnas, filas y valores.
-4. Editar 2 o 3 stocks.
-5. Exportar de nuevo.
-6. Confirmar que solo cambió `Estoque`.
-
-## Estado actual
-
-MVP funcional para conteo visual de stock desde CSV de Bling, optimizado para uso rápido en navegador, sin backend y con exportación compatible con Bling.
+Editor visual de estoque para um produto por vez a partir de CSV do Bling, otimizado para uso rápido no navegador, sem backend e com exportação compatível com Bling.

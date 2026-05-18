@@ -43,17 +43,3 @@ export function clearAllSessions(): void {
   keys.forEach((k) => localStorage.removeItem(k));
 }
 
-export function listSessions(): StoredSession[] {
-  const out: StoredSession[] = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (!k || !k.startsWith(KEY_PREFIX)) continue;
-    try {
-      const raw = localStorage.getItem(k);
-      if (raw) out.push(JSON.parse(raw) as StoredSession);
-    } catch {
-      /* ignore corrupted */
-    }
-  }
-  return out;
-}

@@ -49,8 +49,8 @@ export function parseDescricao(raw: string): ParsedDescricao {
  */
 export function formatParsedDescricao(p: ParsedDescricao): string {
   const parts: string[] = [];
-  if (p.cor) parts.push(`Color: ${p.cor}`);
-  if (p.tamanho) parts.push(`Talla: ${p.tamanho}`);
+  if (p.cor) parts.push(`Cor: ${p.cor}`);
+  if (p.tamanho) parts.push(`Tamanho: ${p.tamanho}`);
   for (const o of p.other) parts.push(`${o.key}: ${o.value}`);
   return parts.join(' | ') || p.raw;
 }

@@ -21,7 +21,7 @@ export function parseCsv(file: File): Promise<ParseResult> {
       transformHeader: (h) => h.trim(),
       complete: (results) => {
         if (!results.meta.fields || results.meta.fields.length === 0) {
-          reject(new Error('Archivo de ERP no compatible: no se detectaron cabeceras.'));
+          reject(new Error('Arquivo ERP incompatível: nenhum cabeçalho detectado.'));
           return;
         }
 
@@ -100,5 +100,5 @@ export function buildExportFilename(): string {
   const pad = (n: number) => String(n).padStart(2, '0');
   const ts = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}`;
 
-  return `gissary_estoque_editado_${ts}.csv`;
+  return `flowstock_estoque_${ts}.csv`;
 }
